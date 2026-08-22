@@ -1,0 +1,53 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+group = 'com.graydoll'
+version = '1.0.0'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+application {
+    mainClass = 'com.graydoll.calculadora.CalculatorApp'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.11.4'
+}
+
+test {
+    useJUnitPlatform()
+    outputs.upToDateWhen { false }
+
+    testLogging {
+        events 'passed', 'skipped', 'failed'
+        exceptionFormat 'full'
+        showStandardStreams = false
+    }
+
+    afterSuite { descriptor, result ->
+        def elapsed = String.format('%.3f', (result.endTime - result.startTime) / 1000.0)
+        if (descriptor.parent) {
+            println "Running ${descriptor.name}"
+            println "Tests run: ${result.testCount}, Failures: ${result.failedTestCount}, Errors: 0, Skipped: ${result.skippedTestCount}, Time elapsed: ${elapsed} s"
+            println()
+        } else {
+            println '-------------------------------------------------------'
+            println ' T E S T S'
+            println '-------------------------------------------------------'
+            println()
+            println 'Results :'
+            println()
+            println "Tests run: ${result.testCount}, Failures: ${result.failedTestCount}, Errors: 0, Skipped: ${result.skippedTestCount}"
+            println()
+        }
+    }
+}
