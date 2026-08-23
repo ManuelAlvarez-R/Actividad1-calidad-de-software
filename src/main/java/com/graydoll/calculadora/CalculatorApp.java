@@ -3,7 +3,9 @@ package com.graydoll.calculadora;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.GridLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -48,46 +50,52 @@ public class CalculatorApp extends JFrame {
         display.setForeground(Color.WHITE);
         display.setBorder(BorderFactory.createEmptyBorder(16, 12, 16, 12));
 
-        JPanel buttons = new JPanel(new GridLayout(5, 4, 8, 8));
-        buttons.setBorder(BorderFactory.createEmptyBorder(12, 12, 12, 12));
+        JPanel buttons = new JPanel(new GridBagLayout());
+        buttons.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
         buttons.setBackground(new Color(24, 24, 24));
 
-        addButton(buttons, "C", new Color(180, 70, 70), this::clear);
-        addButton(buttons, "⌫", new Color(70, 70, 80), this::backspace);
-        addButton(buttons, "/", new Color(70, 90, 140), e -> setOperation("/"));
-        addButton(buttons, "*", new Color(70, 90, 140), e -> setOperation("*"));
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.weightx = 1;
+        gbc.weighty = 1;
+        gbc.insets = new Insets(4, 4, 4, 4);
 
-        addDigit(buttons, "7");
-        addDigit(buttons, "8");
-        addDigit(buttons, "9");
-        addButton(buttons, "-", new Color(70, 90, 140), e -> setOperation("-"));
+        addButton(buttons, "C", new Color(180, 70, 70), this::clear, gbc, 0, 0, 1);
+        addButton(buttons, "DEL", new Color(70, 70, 80), this::backspace, gbc, 1, 0, 1);
+        addButton(buttons, "/", new Color(70, 90, 140), e -> setOperation("/"), gbc, 2, 0, 1);
+        addButton(buttons, "*", new Color(70, 90, 140), e -> setOperation("*"), gbc, 3, 0, 1);
 
-        addDigit(buttons, "4");
-        addDigit(buttons, "5");
-        addDigit(buttons, "6");
-        addButton(buttons, "+", new Color(70, 90, 140), e -> setOperation("+"));
+        addDigit(buttons, "7", gbc, 0, 1);
+        addDigit(buttons, "8", gbc, 1, 1);
+        addDigit(buttons, "9", gbc, 2, 1);
+        addButton(buttons, "-", new Color(70, 90, 140), e -> setOperation("-"), gbc, 3, 1, 1);
 
-        addDigit(buttons, "1");
-        addDigit(buttons, "2");
-        addDigit(buttons, "3");
-        addButton(buttons, "=", new Color(50, 130, 90), this::equalsPressed);
+        addDigit(buttons, "4", gbc, 0, 2);
+        addDigit(buttons, "5", gbc, 1, 2);
+        addDigit(buttons, "6", gbc, 2, 2);
+        addButton(buttons, "+", new Color(70, 90, 140), e -> setOperation("+"), gbc, 3, 2, 1);
 
-        addDigit(buttons, "0");
-        addButton(buttons, ".", new Color(50, 50, 55), this::decimalPressed);
-        addButton(buttons, "+/-", new Color(50, 50, 55), this::toggleSign);
-        addButton(buttons, "=", new Color(50, 130, 90), this::equalsPressed);
+        addDigit(buttons, "1", gbc, 0, 3);
+        addDigit(buttons, "2", gbc, 1, 3);
+        addDigit(buttons, "3", gbc, 2, 3);
+        addButton(buttons, "+/-", new Color(50, 50, 55), this::toggleSign, gbc, 3, 3, 1);
+
+        addDigit(buttons, "0", gbc, 0, 4);
+        addButton(buttons, ".", new Color(50, 50, 55), this::decimalPressed, gbc, 1, 4, 1);
+        addButton(buttons, "=", new Color(50, 130, 90), this::equalsPressed, gbc, 2, 4, 2);
 
         getContentPane().setBackground(new Color(24, 24, 24));
         add(display, BorderLayout.NORTH);
         add(buttons, BorderLayout.CENTER);
     }
 
-    private void addDigit(JPanel parent, String digit) {
-        addButton(parent, digit, new Color(50, 50, 55), e -> appendDigit(digit));
+    private void addDigit(JPanel parent, String digit, GridBagConstraints gbc, int x, int y) {
+        addButton(parent, digit, new Color(50, 50, 55), e -> appendDigit(digit), gbc, x, y, 1);
     }
 
     private void addButton(JPanel parent, String text, Color background,
-                           java.awt.event.ActionListener listener) {
+                           java.awt.event.ActionListener listener,
+                           GridBagConstraints gbc, int x, int y, int width) {
         JButton button = new JButton(text);
         button.setFont(new Font("Segoe UI", Font.BOLD, 18));
         button.setForeground(Color.WHITE);
@@ -95,7 +103,10 @@ public class CalculatorApp extends JFrame {
         button.setFocusPainted(false);
         button.setBorderPainted(false);
         button.addActionListener(listener);
-        parent.add(button);
+        gbc.gridx = x;
+        gbc.gridy = y;
+        gbc.gridwidth = width;
+        parent.add(button, gbc);
     }
 
     private void appendDigit(String digit) {
