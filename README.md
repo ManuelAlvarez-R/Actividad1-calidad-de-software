@@ -104,7 +104,7 @@ Linux / macOS:
 
 ## Resultados de las pruebas
 
-Última ejecución con Gradle 8.11.1:
+Última ejecución con Gradle 8.11.1. El informe HTML de Gradle está en [`docs/test-report/index.html`](docs/test-report/index.html) (se regenera en `build/reports/tests/test/index.html` al correr `.\gradlew.bat test`).
 
 | Métrica | Valor |
 | --- | --- |
