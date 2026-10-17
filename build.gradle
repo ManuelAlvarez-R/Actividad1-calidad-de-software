@@ -1,10 +1,40 @@
 plugins {
     id 'java'
     id 'application'
+    id 'jacoco'
+    id 'org.sonarqube' version '6.2.0.5505'
 }
 
 group = 'com.graydoll'
 version = '1.0.0'
+
+jacoco {
+    toolVersion = '0.8.12'
+}
+tasks.named('test') {
+    finalizedBy tasks.named('jacocoTestReport')
+}
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.required = true
+        html.required = true
+    }
+}
+sonar {
+    properties {
+        property 'sonar.projectKey', 'ManuelAlvarez-R_Actividad1-calidad-de-software'
+        property 'sonar.organization', 'manuelalvarez-r'
+        property 'sonar.host.url', 'https://sonarcloud.io'
+        property 'sonar.java.source', '17'
+        property 'sonar.coverage.jacoco.xmlReportPaths',
+            layout.buildDirectory.file('reports/jacoco/test/jacocoTestReport.xml').get().asFile.path
+        property 'sonar.junit.reportPaths',
+            layout.buildDirectory.dir('test-results/test').get().asFile.path
+        // La GUI Swing no tiene tests; si no se excluye, baja el coverage global.
+        property 'sonar.coverage.exclusions', '**/CalculatorApp.java'
+    }
+}
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17

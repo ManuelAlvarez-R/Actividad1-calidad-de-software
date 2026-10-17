@@ -1,0 +1,27 @@
+name: SonarCloud
+on:
+  push:
+    branches: [main]
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - uses: actions/cache@v4
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+      - name: Test, coverage and analyze
+        env:
+          SONAR_TOKEN: ${{ secrets.ACTIVIDAD_CALIDAD }}
+        run: ./gradlew test jacocoTestReport sonar --no-daemon
