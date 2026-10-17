@@ -1,4 +1,4 @@
-# Calculadora Graydoll
+# Calculadora Graydoll -
 
 Calculadora en Java construida con Gradle como actividad de **Calidad de Software**. Soporta suma, resta, multiplicación y división, con pruebas unitarias (happy path, exceptional path, avanzadas y de performance) e interfaz gráfica.
 
